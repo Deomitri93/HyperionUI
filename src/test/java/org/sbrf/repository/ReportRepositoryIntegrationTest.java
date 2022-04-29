@@ -10,21 +10,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@SpringBootTest(classes = QueryApplication.class)
 public class ReportRepositoryIntegrationTest {
     private static final String CUSTOMERS_DEPOSITS_REPORT_NAME = "CustomersDeposits";
     private static final String VSP_OPERATIONS_REPORT_NAME = "VSPOperations";
@@ -46,8 +42,6 @@ public class ReportRepositoryIntegrationTest {
     private Resource vspOperationsReportXLSTemplateResource;
 
     private List<Report> reports;
-//    private Report customersDepositsReport;
-//    private Report vspOperationsReport;
 
     private void initReports() {
         try {
@@ -57,20 +51,10 @@ public class ReportRepositoryIntegrationTest {
                     CUSTOMERS_DEPOSITS_REPORT_NAME,
                     Files.readAllBytes(customersDepositsReportSQLQueryResource.getFile().toPath()),
                     null));
-
             reports.add(new Report(
                     VSP_OPERATIONS_REPORT_NAME,
                     Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()),
                     Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath())));
-
-//            customersDepositsReport = new Report(
-//                    CUSTOMERS_DEPOSITS_REPORT_NAME,
-//                    Files.readAllBytes(customersDepositsReportSQLQueryResource.getFile().toPath()),
-//                    null);
-//            vspOperationsReport = new Report(
-//                    VSP_OPERATIONS_REPORT_NAME,
-//                    Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()),
-//                    Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,29 +62,9 @@ public class ReportRepositoryIntegrationTest {
 
     @Before
     public void setUp() {
-//        Report customersDepositsReport;
-//        Report vspOperationsReport;
-//
-//        try {
-//            customersDepositsReport = new Report(
-//                    CUSTOMERS_DEPOSITS_REPORT_NAME,
-//                    Files.readAllBytes(customersDepositsReportSQLQueryResource.getFile().toPath()),
-//                    null);
-//            vspOperationsReport = new Report(
-//                    VSP_OPERATIONS_REPORT_NAME,
-//                    Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()),
-//                    Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath()));
-//
-//            reportRepository.save(customersDepositsReport);
-//            reportRepository.save(vspOperationsReport);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         initReports();
 
         reports.forEach(report -> reportRepository.save(report));
-//        reportRepository.save(customersDepositsReport);
-//        reportRepository.save(vspOperationsReport);
     }
 
     @After

@@ -1,7 +1,6 @@
 package org.sbrf.entity;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.sbrf.util.Utils.parseSQLToFindParameters;
