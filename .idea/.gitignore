@@ -40,3 +40,10 @@ out/
 *.iml
 *.ipr
 *.iws
+
+
+##############################
+## Gradle
+##############################
+.idea/**/libraries
+.idea/libraries

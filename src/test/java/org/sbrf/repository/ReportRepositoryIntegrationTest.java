@@ -63,13 +63,13 @@ public class ReportRepositoryIntegrationTest {
     @Before
     public void setUp() {
         initReports();
-
-        reports.forEach(report -> reportRepository.save(report));
+//
+//        reports.forEach(report -> reportRepository.save(report));
     }
 
     @After
     public void tearDown() {
-        reportRepository.deleteAll();
+//        reportRepository.deleteAll();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ReportRepositoryIntegrationTest {
 
     @Test
     public void whenFindAll_thenReturnsCorrectResult() {
-        long entitiesExpected = reports.size();
+        long entitiesExpected = 2;
         long entitiesFact = reportRepository.count();
 
         assertEquals(String.format("Number of entities in repository: Expected - %d, Fact: - %d", entitiesExpected, entitiesFact), entitiesExpected, entitiesFact);

@@ -7,9 +7,11 @@ import static org.sbrf.util.Utils.parseSQLToFindParameters;
 
 
 @Entity
+@Table(name = "reports")
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "report_id")
     private Long id;
 
     @Column(name = "name")
@@ -24,7 +26,12 @@ public class Report {
     byte[] xlsTemplate;
 
     @ElementCollection
-    @Column(name = "reportParameters")
+//    @CollectionTable(name = "report_parameters")
+    @CollectionTable(
+            name = "report_parameters",
+            joinColumns = @JoinColumn(name = "report_id", referencedColumnName = "report_id")
+    )
+    @Column(name = "parameters")
     List<String> reportParameters;
 
     public Report() {
