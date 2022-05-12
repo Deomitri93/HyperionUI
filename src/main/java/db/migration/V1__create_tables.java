@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 public class V1__create_tables extends BaseJavaMigration {
-    private static final String CREATE_SEQUENCE = "CREATE SEQUENCE hibernate_sequence START WITH 1 INCREMENT BY 1";
+    private static final String CREATE_SEQUENCE = "CREATE SEQUENCE hibernate_sequence START WITH 3 INCREMENT BY 1";
     private static final String CREATE_REPORT_PARAMETERS_TABLE = "CREATE TABLE report_parameters (" +
             "   report_id BIGINT NOT NULL," +
             "   parameters VARCHAR(255)" +

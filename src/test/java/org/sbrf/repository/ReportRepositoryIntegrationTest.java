@@ -16,14 +16,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ReportRepositoryIntegrationTest {
     private static final String CUSTOMERS_DEPOSITS_REPORT_NAME = "CustomersDeposits";
     private static final String VSP_OPERATIONS_REPORT_NAME = "VSPOperations";
+    private static final String TEST_REPORT_NAME = "TestReport";
 
     private static final String CUSTOMERS_DEPOSITS_REPORT_SQL_QUERY_PATH = "classpath:sqlQueries/CustomersDeposits.sql";
     private static final String VSP_OPERATIONS_REPORT_SQL_QUERY_PATH = "classpath:sqlQueries/VSPOperations.sql";
@@ -62,7 +62,7 @@ public class ReportRepositoryIntegrationTest {
 
     @Before
     public void setUp() {
-        initReports();
+//        initReports();
 //
 //        reports.forEach(report -> reportRepository.save(report));
     }
@@ -87,10 +87,56 @@ public class ReportRepositoryIntegrationTest {
     }
 
     @Test
-    public void whenEntitiesSaved_thenReturnsCorrectResult() {
-        List<String> reportsFromRepositoryNames = new ArrayList<>();
+    public void whenEntitySaved_thenReturnsCorrectResult() {
+        Report testReport = new Report();
 
-        reportRepository.findAll().forEach(report -> reportsFromRepositoryNames.add(report.getName()));
-        reports.forEach(report -> assertTrue(String.format("Repository doesn't contain report with name %s", report.getName()), reportsFromRepositoryNames.contains(report.getName())));
+        try {
+            testReport = new Report(
+                    TEST_REPORT_NAME,
+                    Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()),
+                    Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        reportRepository.save(testReport);
+
+        Report foundReport = reportRepository.findByName(TEST_REPORT_NAME).get(0);
+        byte[] foundSQLQuery = foundReport.getSqlQuery();
+        byte[] foundXLSTemplate = foundReport.getXlsTemplate();
+
+        assertEquals(String.format("Repository doesn't contain report with name %s", TEST_REPORT_NAME), TEST_REPORT_NAME, foundReport.getName());
+
+        try {
+            assertArrayEquals(String.format("Found by name '%s' SQL query is not equal to saved one", TEST_REPORT_NAME), foundSQLQuery, Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()));
+            assertArrayEquals(String.format("Found by name '%s' XLS template is not equal to saved one", TEST_REPORT_NAME), foundXLSTemplate, Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    @Test
+    public void whenEntityDeleted_thenReturnsCorrectResult() {
+        Report testReport = new Report();
+
+        try {
+            testReport = new Report(
+                    TEST_REPORT_NAME,
+                    Files.readAllBytes(vspOperationsReportSQLQueryResource.getFile().toPath()),
+                    Files.readAllBytes(vspOperationsReportXLSTemplateResource.getFile().toPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        reportRepository.save(testReport);
+
+        long reportsBeforeDeletion = reportRepository.count();
+
+        reportRepository.delete(testReport);
+
+        long reportsAfterDeletion = reportRepository.count();
+
+        assertEquals(String.format("Number of reports before deletion (%d) is not equal to number of reports after deletion + 1 (%d)", reportsAfterDeletion, reportsAfterDeletion + 1), reportsBeforeDeletion, reportsAfterDeletion + 1);
+    }
+
 }
