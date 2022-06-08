@@ -9,5 +9,9 @@ public interface IReportService {
 
     Report getReportByName(String reportName);
 
+    Report getReportById(Long reportId);
+
     List<Report> getAllReports();
+
+    void deleteById(Long reportId);
 }
